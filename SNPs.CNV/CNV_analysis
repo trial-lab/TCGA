@@ -1,0 +1,183 @@
+
+
+
+library(TCGAbiolinks)
+----------------------------------------------------------------
+query.coad.nocnv<-GDCquery(project = "TCGA-COAD",data.category = "Copy number variation",legacy = TRUE,file.type = "nocnv_hg19.seg",sample.type = c("Primary solid Tumor"))
+GDCdownload(query.coad.nocnv)
+coad.nocnv<-GDCprepare(query.coad.nocnv, save = TRUE, save.filename = "COADnocnvhg19.rda")
+
+
+query.read.nocnv<-GDCquery(project ="TCGA-READ",data.category = "Copy number variation",legacy = TRUE,file.type = "nocnv_hg19.seg",sample.type = c("Primary solid Tumor"))
+
+GDCdownload(query.read.nocnv)
+read.nocnv<-GDCprepare(query.read.nocnv, save = TRUE, save.filename = "READnocnvhg19.rda")
+--------------------------------------------------------------------------
+ query.lgg.nocnv<-GDCquery(project = "TCGA-LGG",data.category = "Copy number variation",legacy = TRUE,file.type = "nocnv_hg19.seg",sample.type = c("Primary solid Tumor"))
+ GDCdownload(query.lgg.nocnv)
+ lgg.nocnv<-GDCprepare(query.lgg.nocnv, save = TRUE, save.filename = "LGGnocnvhg19.rda")
+
+-------------------------------------------
+query.gbm.nocnv<-GDCquery(project = "TCGA-GBM",data.category = "Copy number variation",legacy = TRUE,file.type = "nocnv_hg19.seg",sample.type = c("Primary solid Tumor"))
+GDCdownload(query.gbm.nocnv)
+gbm.nocnv<-GDCprepare(query.gbm.nocnv, save = TRUE, save.filename = "GBMnocnvhg19.rda")
+
+------------------------------------------------------------------------
+
+library(TCGAbiolinks)
+library(downloader)
+library(readr)
+library(gaia)
+
+gaiaCNVplot<-function (calls, cancer=NULL, threshold=0.01)
+{
+Calls<-calls[order(calls[,"Region Start [bp]"]),]
+Calls<-Calls[order(Calls[,"Chromosome"]),]
+rownames(Calls)<-NULL
+Chromo<-Calls[,"Chromosome"]
+Gains<-apply(Calls,1,function(x) ifelse (x["Aberration Kind"]==1,x["score"],0))
+Losses<-apply(Calls,1,function(x) ifelse (x["Aberration Kind"]==0,x["score"],0))
+plot(Gains,ylim=c(-max(Calls[,"score"]+2), max(Calls[,"score"]+2)),type="h",col="red",xlab="Chromosome",ylab="Score",main = paste("Recurrent Copy Number Variations",cancer, sep =" – "),xaxt="n")
+points(-(Losses),type="h",col="blue")
+abline(h=0,cex=4)
+abline(h=-log10(threshold),col="orange",cex=4,main="test")
+abline(h=log10(threshold),col="orange",cex=4,main="test")
+uni.chr<-unique(Chromo)
+temp<-rep(0,length(uni.chr))
+for (i in 1:length(uni.chr)){
+temp[i]<- max(which(uni.chr[i]== Chromo))
+}
+for (i in 1:length(temp)){
+abline(v=temp[i],col="black",lty="dashed",)
+}
+nChroms<-length(uni.chr)
+begin<-c()
+for (d in 1:nChroms) {
+chrom <-sum(Chromo == uni.chr[d])
+begin<-append(begin,chrom)
+}
+temp2<-rep(0,nChroms)
+for (i in 1:nChroms){
+	if (i==1){
+	temp2[1]<-(begin[1] * 0.5)
+	}
+	else if (i>1) {
+	temp2[1]<-temp[i-1]+(begin[i]*0.5)
+	}
+}
+uni.chr[uni.chr==23] <-"X"
+uni.chr[uni.chr==24] <-"Y"
+for (i in 1:length(temp)){
+	axis(1, at=temp2[i],labels=uni.chr[i],cex.axis=1)
+}
+legend(x=1,y=max(Calls[,"score"]+2),y.intersp=0.8,c("Amp"),pch=15,col=c("red"),text.font=3)
+legend(x=1,y=-max(Calls[,"score"]+0.5),y.intersp=0.8,c("Del"),pch=15,col=c("blue"),text.font=3)
+}
+
+
+for(cancer in c("LGG","GBM")) {
+	message(paste0("Starting",cancer))
+	cnvMatrix<-get(load(paste0(cancer,"nocnvhg19.rda")))
+	cnvMatrix<-cbind(cnvMatrix,Label=NA)
+	cnvMatrix[cnvMatrix[,"Segment_Mean"]< -0.3,"Label"]<-0
+	cnvMatrix[cnvMatrix[,"Segment_Mean"]> 0.3,"Label"]<-1
+	cnvMatrix<-cnvMatrix[!is.na(cnvMatrix$Label),]
+	cnvMatrix<-cnvMatrix[,-6]
+	colnames(cnvMatrix)<-c("Sample.Name","Chromosome","Start","End","Num.of.Markers","Aberration")
+	xidx<-which(cnvMatrix$Chromosome=="X")
+	yidx<-which(cnvMatrix$Chromosome=="Y")
+	cnvMatrix[xidx,"Chromosome"] <-23
+	cnvMatrix[yidx,"Chromosome"] <-24
+	cnvMatrix$Chromosome<-sapply(cnvMatrix$Chromosome,as.integer)
+	gdac.root<-"ftp://ftp.broadinstitute.org/pub/GISTIC2.0/hg19_support/"
+	file<-paste0(gdac.root,"genome.info.6.0_hg19.na31_minus_frequent_nan_probes_sorted_2.1.txt")
+	if(!file.exists(basename(file))) download(file,basename(file))
+	markersMatrix<-readr::read_tsv(basename(file),col_names=FALSE,col_types="ccn",progress=TRUE)
+	colnames(markersMatrix)<-c("Probe.Name","Chromosome","Start")
+	unique(markersMatrix$Chromosome)
+	xidx<-which(markersMatrix$Chromosome=="X")
+	yidx<-which(markersMatrix$Chromosome=="Y")
+	markersMatrix[xidx,"Chromosome"] <-23
+	markersMatrix[yidx,"Chromosome"] <-24
+	markersMatrix$Chromosome<-sapply(markersMatrix$Chromosome,as.integer)
+	markerID<-apply(markersMatrix,1,function(x) paste0(x[2],":",x[3]))
+	print(table(duplicated(markerID)))
+	print(table(duplicated(markersMatrix$Probe.Name)))
+	markersMatrix<-markersMatrix[-which(duplicated(markerID)),]
+	markerID<-apply(markersMatrix,1,function(x) paste0(x[2],":",x[3]))
+	file<-paste0(gdac.root,"CNV.hg19.bypos.111213.txt")
+	if(!file.exists(basename(file))) download(file,basename(file))
+	commonCNV<-readr::read_tsv(basename(file),progress=TRUE)
+	commonID<-apply(commonCNV,1,function(x) paste0(x[2],":",x[3]))
+	print(table(commonID %in% markerID))
+	print(table(markerID %in% commonID))
+	markersMatrix_fil<-markersMatrix[!markerID %in% commonID,]
+	markers_obj<-load_markers(as.data.frame(markersMatrix_fil))
+	nbsamples<-length(get(paste0("query.",tolower(cancer),".nocnv"))$results[[1]]$cases)
+	cnv_obj<-load_cnv(cnvMatrix,markers_obj,nbsamples)
+	results<-runGAIA(cnv_obj,markers_obj,output_file_name=paste0("GAIA_",cancer,"_flt.txt"),aberrations=-1,chromosomes=-1,num_iterations=10,threshold=0.25)
+	threshold<-0.0001
+	RecCNV<-t(apply(results,1,as.numeric))
+	colnames(RecCNV)<-colnames(results)
+	RecCNV<-cbind(RecCNV,score=0)
+	minval<-format(min(RecCNV[RecCNV[,"q-value"]!=0,"q-value"]),scientific=FALSE)
+	minval<-substring(minval,1,nchar(minval)-1)
+	RecCNV[RecCNV[,"q-value"]==0,"q-value"]<-as.numeric(minval)
+	RecCNV[,"score"]<-sapply(RecCNV[,"q-value"],function(x) -log10(as.numeric(x)))
+	RecCNV[RecCNV[,"q-value"]==as.numeric(minval),]
+	gaiaCNVplot(RecCNV,cancer,threshold)
+	save(results,RecCNV,threshold,file=paste0(cancer,"_CNV_results.rda"))
+	message(paste0("Results saved as:",cancer,"_CNV_results.rda"))
+}
+
+
+library(biomaRt)
+library(GenomicRanges)
+mart<-useMart(biomart="ensembl", dataset="hsapiens_gene_ensembl")
+genes<-getBM(attributes = c("hgnc_symbol", "chromosome_name","start_position","end_position"),mart=mart)
+genes<-genes[genes[,1]!="" & genes[,2]%in%c(1:22,"X","Y"),]
+xidx<-which(genes[,2]=="X")
+yidx<-which(genes[,2]=="Y")
+genes[xidx, 2]<-23
+genes[yidx, 2]<-24
+genes[,2]<-sapply(genes[,2],as.integer)
+genes<-genes[order(genes[,3]),]
+genes<-genes[order(genes[,2]),]
+colnames(genes)<-c("GeneSymbol","Chr","Start","End")
+genes_GR<-makeGRangesFromDataFrame(genes,keep.extra.columns=TRUE)
+
+for(cancer in c("LGG","GBM")){
+	load(paste0(cancer,"_CNV_results.rda"))
+	sCNV<-RecCNV[RecCNV[,"q-value"]<=threshold,c(1:4,6)]
+	sCNV<-sCNV[order(sCNV[,3]),]
+	sCNV<-sCNV[order(sCNV[,1]),]
+	colnames(sCNV)<-c("Chr","Aberration","Start","End","q-value")
+	sCNV_GR<-makeGRangesFromDataFrame(sCNV,keep.extra.columns=TRUE)
+	hits<-findOverlaps(genes_GR,sCNV_GR,type="within")
+	sCNV_ann<-cbind(sCNV[subjectHits(hits),],genes[queryHits(hits),])
+	AberantRegion<-paste0(sCNV_ann[,1],":",sCNV_ann[,3],"-",sCNV_ann[,4])
+	GeneRegion<-paste0(sCNV_ann[,7],":",sCNV_ann[,8],"-",sCNV_ann[,9])
+	AmpDel_genes<-cbind(sCNV_ann[,c(6,2,5)],AberrantRegion,GeneRegion)
+	AmpDel_genes[AmpDel_gene[,2]==0,2]<-"Del"
+	AmpDel_genes[AmpDel_gene[,2]==1,2]<-"Amp"
+	rownames(AmpDel_genes)<-NULL
+	save(RecCNV,AmpDel_genes,file=paste0(cancer,"_CNV_results.rda"))
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

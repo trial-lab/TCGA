@@ -1,0 +1,21 @@
+INFO [2018-10-16 23:10:40] $x
+INFO [2018-10-16 23:10:40] list(lowerinner, lowerouter, upperinner, upperouter)
+INFO [2018-10-16 23:10:40] 
+INFO [2018-10-16 23:10:40] $category.names
+INFO [2018-10-16 23:10:40] c("lowerinner", "lowerouter", "upperinner", "upperouter")
+INFO [2018-10-16 23:10:40] 
+INFO [2018-10-16 23:10:40] $filename
+INFO [2018-10-16 23:10:40] [1] "BRAC_Overlap_venn_diagramm.png"
+INFO [2018-10-16 23:10:40] 
+INFO [2018-10-16 23:10:40] $output
+INFO [2018-10-16 23:10:40] [1] TRUE
+INFO [2018-10-16 23:10:40] 
+INFO [2018-10-16 23:10:40] $imagetype
+INFO [2018-10-16 23:10:40] [1] "png"
+INFO [2018-10-16 23:10:40] 
+INFO [2018-10-16 23:10:40] $lty
+INFO [2018-10-16 23:10:40] [1] "blank"
+INFO [2018-10-16 23:10:40] 
+INFO [2018-10-16 23:10:40] $fill
+INFO [2018-10-16 23:10:40] c("#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4")
+INFO [2018-10-16 23:10:40] 

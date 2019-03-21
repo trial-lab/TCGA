@@ -1,0 +1,7 @@
+library(ggplot2)
+library(cnv)
+data <- read.delim("TP_msi_h_hits.hits-vs-NT_msi_h_hits.hits.log2-0.5.pvalue-0.001.minw-4.cnv")
+cnv.print(data)
+cnv.summary(data)
+plot.cnv(data)
+ggsave("test.pdf")

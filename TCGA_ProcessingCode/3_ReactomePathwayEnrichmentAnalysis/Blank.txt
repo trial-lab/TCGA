@@ -1,0 +1,39 @@
+Pathway Enrichment Analysis
+ ID                                                                  Description GeneRatio   BgRatio       pvalue
+R-HSA-6798695 R-HSA-6798695                                                     Neutrophil degranulation      8/27 479/10561 1.747419e-05
+R-HSA-6803157 R-HSA-6803157                                                       Antimicrobial peptides      4/27 101/10561 1.167837e-04
+R-HSA-5687613 R-HSA-5687613                               Diseases associated with surfactant metabolism      2/27  12/10561 4.089362e-04
+R-HSA-391160   R-HSA-391160                                Signal regulatory protein family interactions      2/27  16/10561 7.388439e-04
+R-HSA-5083625 R-HSA-5083625 Defective GALNT3 causes familial hyperphosphatemic tumoral calcinosis (HFTC)      2/27  17/10561 8.360371e-04
+R-HSA-5083632 R-HSA-5083632              Defective C1GALT1C1 causes Tn polyagglutination syndrome (TNPS)      2/27  17/10561 8.360371e-04
+R-HSA-5083636 R-HSA-5083636                         Defective GALNT12 causes colorectal cancer 1 (CRCS1)      2/27  17/10561 8.360371e-04
+R-HSA-5686938 R-HSA-5686938                                       Regulation of TLR by endogenous ligand      2/27  19/10561 1.047884e-03
+R-HSA-977068   R-HSA-977068                                         Termination of O-glycan biosynthesis      2/27  24/10561 1.678048e-03
+R-HSA-168179   R-HSA-168179                                         Toll Like Receptor TLR1:TLR2 Cascade      3/27  99/10561 1.985014e-03
+R-HSA-181438   R-HSA-181438                                          Toll Like Receptor 2 (TLR2) Cascade      3/27  99/10561 1.985014e-03
+R-HSA-5621480 R-HSA-5621480                                                              Dectin-2 family      2/27  27/10561 2.123980e-03
+R-HSA-5683826 R-HSA-5683826                                                        Surfactant metabolism      2/27  30/10561 2.619879e-03
+R-HSA-114608   R-HSA-114608                                                      Platelet degranulation       3/27 129/10561 4.203456e-03
+R-HSA-166016   R-HSA-166016                                          Toll Like Receptor 4 (TLR4) Cascade      3/27 131/10561 4.388675e-03
+R-HSA-76005     R-HSA-76005                                 Response to elevated platelet cytosolic Ca2+      3/27 134/10561 4.675722e-03
+R-HSA-977606   R-HSA-977606                                             Regulation of Complement cascade      2/27  47/10561 6.338829e-03
+R-HSA-168898   R-HSA-168898                                                 Toll-Like Receptors Cascades      3/27 157/10561 7.256639e-03
+                 p.adjust      qvalue                                        geneID Count
+R-HSA-6798695 0.001922160 0.001397935 CRISP3/CD177/VNN1/SERPINA3/LYZ/ORM2/HRNR/PPBP     8
+R-HSA-6803157 0.006423105 0.004671349                        PI3/PLA2G2A/LYZ/BPIFA1     4
+R-HSA-5687613 0.013137725 0.009554709                                 SFTPA2/SFTPA1     2
+R-HSA-391160  0.013137725 0.009554709                                 SFTPA2/SFTPA1     2
+R-HSA-5083625 0.013137725 0.009554709                                    MUC6/MUCL1     2
+R-HSA-5083632 0.013137725 0.009554709                                    MUC6/MUCL1     2
+R-HSA-5083636 0.013137725 0.009554709                                    MUC6/MUCL1     2
+R-HSA-5686938 0.014408410 0.010478844                                 SFTPA2/SFTPA1     2
+R-HSA-977068  0.019469815 0.014159866                                    MUC6/MUCL1     2
+R-HSA-168179  0.019469815 0.014159866                           DUSP4/SFTPA2/SFTPA1     3
+R-HSA-181438  0.019469815 0.014159866                           DUSP4/SFTPA2/SFTPA1     3
+R-HSA-5621480 0.019469815 0.014159866                                    MUC6/MUCL1     2
+R-HSA-5683826 0.022168208 0.016122333                                 SFTPA2/SFTPA1     2
+R-HSA-114608  0.032145586 0.023378608                            SERPINA3/ORM2/PPBP     3
+R-HSA-166016  0.032145586 0.023378608                           DUSP4/SFTPA2/SFTPA1     3
+R-HSA-76005   0.032145586 0.023378608                            SERPINA3/ORM2/PPBP     3
+R-HSA-977606  0.041015950 0.029829782                                      C8G/CPN1     2
+R-HSA-168898  0.044346129 0.032251730                           DUSP4/SFTPA2/SFTPA1     3
